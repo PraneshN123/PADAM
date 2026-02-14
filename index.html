@@ -1,1 +1,408 @@
 
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Pranesh ❤️ Preethi | The Love Story</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Nunito:wght@400;700;900&display=swap" rel="stylesheet">
+    
+    <style>
+        /* --- 1. CORE VARIABLES --- */
+        :root {
+            --primary: #ff3366;
+            --secondary: #ff6b81;
+            --bg-glass: rgba(255, 255, 255, 0.4);
+            --border: rgba(255, 255, 255, 0.6);
+            --shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; touch-action: manipulation; }
+
+        body {
+            font-family: 'Nunito', sans-serif;
+            background: linear-gradient(135deg, #fbc2eb 0%, #a6c1ee 100%);
+            height: 100vh;
+            width: 100vw;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            /* Heart Cursor */
+            cursor: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='%23ff3366'><path d='M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z'/></svg>") 12 12, auto;
+        }
+
+        /* --- 2. BACKGROUND ANIMATION --- */
+        .bg-hearts { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; }
+        .bg-heart { position: absolute; bottom: -50px; animation: floatUp linear infinite; opacity: 0.7; }
+        @keyframes floatUp { to { transform: translateY(-120vh) rotate(360deg); opacity: 0; } }
+
+        /* --- 3. CUSTOM POPUP (NO ALERTS) --- */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5); backdrop-filter: blur(5px);
+            z-index: 9999; display: none;
+            justify-content: center; align-items: center;
+            animation: fadeIn 0.3s ease;
+        }
+        .modal-card {
+            background: white; padding: 30px; border-radius: 25px;
+            text-align: center; width: 85%; max-width: 350px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            transform: scale(0.8);
+            animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+        .modal-icon { font-size: 3rem; margin-bottom: 10px; display: block; }
+        .modal-title { font-family: 'Dancing Script'; font-size: 2rem; color: var(--primary); }
+        .modal-msg { margin-bottom: 20px; color: #444; line-height: 1.5; }
+        .modal-btn { background: var(--primary); color: white; border: none; padding: 12px 30px; border-radius: 50px; font-weight: bold; cursor: pointer; }
+
+        /* --- 4. MAIN CARD UI --- */
+        .card {
+            background: var(--bg-glass);
+            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            border: 2px solid var(--border); border-radius: 30px;
+            padding: 2rem; width: 90%; max-width: 480px; min-height: 550px;
+            box-shadow: var(--shadow); position: relative; z-index: 10;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            text-align: center;
+        }
+
+        h1 { font-family: 'Dancing Script', cursive; font-size: 3rem; color: #d63031; margin-bottom: 10px; }
+        p { font-size: 1.1rem; color: #2d3436; margin-bottom: 20px; }
+        
+        .gif-container { width: 100%; height: 160px; border-radius: 15px; overflow: hidden; margin-bottom: 20px; display: flex; justify-content: center; }
+        .gif-container img { height: 100%; width: auto; max-width: 100%; object-fit: cover; }
+
+        .btn {
+            background: linear-gradient(45deg, #ff3366, #ff6b81); color: white; border: none;
+            padding: 15px 40px; border-radius: 50px; font-size: 1.2rem; font-weight: bold;
+            cursor: pointer; box-shadow: 0 5px 15px rgba(255, 51, 102, 0.4);
+            transition: transform 0.2s; font-family: 'Nunito', sans-serif;
+        }
+        .btn:hover { transform: scale(1.05); }
+
+        /* --- 5. GAME SCREENS --- */
+        .screen { display: none; width: 100%; flex-direction: column; align-items: center; animation: slideUp 0.6s ease; }
+        .screen.active { display: flex; }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* Game Elements */
+        canvas { background: rgba(255,255,255,0.5); border-radius: 15px; margin-bottom: 10px; cursor: none; }
+        .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin: 15px 0; }
+        .mem-card { width: 60px; height: 60px; position: relative; perspective: 1000px; cursor: pointer; }
+        .mem-inner { width: 100%; height: 100%; position: relative; transition: transform 0.6s; transform-style: preserve-3d; }
+        .mem-card.flipped .mem-inner { transform: rotateY(180deg); }
+        .mem-front, .mem-back { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; border-radius: 10px; display: flex; justify-content: center; align-items: center; font-size: 1.5rem; }
+        .mem-front { background: white; color: var(--primary); }
+        .mem-back { background: var(--secondary); color: white; transform: rotateY(180deg); }
+
+        .puzzle-box { display: flex; gap: 5px; margin-bottom: 20px; background: rgba(255,255,255,0.3); padding: 10px; border-radius: 15px; }
+        .slot { width: 40px; height: 40px; background: rgba(0,0,0,0.1); border-radius: 5px; display: flex; justify-content: center; align-items: center; color: white; font-weight: bold; }
+        .slot.filled { background: var(--primary); }
+        .pieces-pool { display: flex; gap: 10px; justify-content: center; }
+        .piece { width: 40px; height: 40px; background: white; color: var(--primary); border-radius: 5px; display: flex; justify-content: center; align-items: center; font-weight: bold; cursor: pointer; animation: popIn 0.3s; }
+
+        /* --- PROPOSAL BUTTONS --- */
+        .btn-group {
+            position: relative;
+            width: 100%;
+            height: 80px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 30px; /* Gap between Yes/No */
+            margin-top: 10px;
+        }
+
+        #yes-btn {
+            background: #ff3366; 
+            z-index: 10;
+            transition: transform 0.3s ease;
+        }
+
+        #no-btn {
+            background: white; 
+            color: #333; 
+            z-index: 2147483647 !important; /* Forces it above everything */
+            position: relative; /* Starts relative, switches to fixed */
+            transition: all 0.1s ease-out; /* Fast movement */
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        /* Confetti */
+        .confetti { position: absolute; width: 10px; height: 10px; animation: fall 3s linear forwards; z-index: 200; }
+        @keyframes fall { to { transform: translateY(100vh) rotate(720deg); } }
+        @keyframes popIn { from { transform: scale(0); } to { transform: scale(1); } }
+
+    </style>
+</head>
+<body>
+
+    <div class="modal-overlay" id="modal">
+        <div class="modal-card">
+            <span class="modal-icon" id="m-icon">✨</span>
+            <div class="modal-title" id="m-title">Title</div>
+            <div class="modal-msg" id="m-msg">Message</div>
+            <button class="modal-btn" id="m-btn">Continue</button>
+        </div>
+    </div>
+
+    <div class="bg-hearts" id="bg-hearts"></div>
+
+    <div class="card">
+        
+        <div id="s-intro" class="screen active">
+            <h1>Pranesh ❤️ Preethi</h1>
+            <p>A magical journey awaits...</p>
+            <div class="gif-container">
+                <img src="https://media.giphy.com/media/26BRv0ThflsHCqDrG/giphy.gif" alt="Love">
+            </div>
+            <p>Ready to unlock the love story?</p>
+            <button class="btn" onclick="nextScreen(1)">Start Journey 🌹</button>
+        </div>
+
+        <div id="s-game1" class="screen">
+            <h2>Catch My Heart ❤️</h2>
+            <p>Collect 10 hearts!</p>
+            <h3 id="score-g1">0 / 10</h3>
+            <canvas id="c-game1" width="280" height="280"></canvas>
+            <p style="font-size:0.8rem">Drag the basket 🧺</p>
+        </div>
+
+        <div id="s-game2" class="screen">
+            <h2>Our Memories 💭</h2>
+            <p>Match the pairs</p>
+            <div class="grid" id="grid-g2"></div>
+        </div>
+
+        <div id="s-game3" class="screen">
+            <h2>Build Love 🧩</h2>
+            <p>Complete the word</p>
+            <div class="puzzle-box" id="slots-g3"></div>
+            <div class="pieces-pool" id="pieces-g3"></div>
+        </div>
+
+        <div id="s-proposal" class="screen">
+            <h1>Preethi...</h1>
+            <div class="gif-container">
+                <img src="https://media.giphy.com/media/l4pTfx2qLszoacZRS/giphy.gif" alt="Please">
+            </div>
+            <p style="font-size: 1.2rem; font-weight: bold;">Will You Be My Valentine? 💖</p>
+            
+            <div class="btn-group">
+                <button id="yes-btn" class="btn" onclick="sayYes()">YES 🥰</button>
+                <button id="no-btn" class="btn">NO 😢</button>
+            </div>
+        </div>
+
+        <div id="s-success" class="screen">
+            <h1 style="font-size: 3rem;">She Said YES! 💍</h1>
+            <div class="gif-container" style="height: 200px;">
+                <img src="https://media.giphy.com/media/T86i6yDyOYz7J6Akqv/giphy.gif" alt="Hug">
+            </div>
+            <p>Pranesh is the happiest person alive! ❤️</p>
+            <p>I Love You Forever, Preethi.</p>
+            <button class="btn" onclick="location.reload()">Replay Love Story ↺</button>
+        </div>
+
+    </div>
+
+    <script>
+        /* --- HELPERS --- */
+        function showModal(icon, title, msg, cb) {
+            const m = document.getElementById('modal');
+            document.getElementById('m-icon').innerText = icon;
+            document.getElementById('m-title').innerText = title;
+            document.getElementById('m-msg').innerText = msg;
+            m.style.display = 'flex';
+            
+            const btn = document.getElementById('m-btn');
+            const newBtn = btn.cloneNode(true);
+            btn.parentNode.replaceChild(newBtn, btn);
+            newBtn.onclick = () => { m.style.display = 'none'; if(cb) cb(); };
+        }
+
+        function showScreen(id) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+        }
+
+        function nextScreen(n) {
+            if(n===1) { showScreen('s-game1'); startCatch(); }
+            if(n===2) { showScreen('s-game2'); startMemory(); }
+            if(n===3) { showScreen('s-game3'); startPuzzle(); }
+            if(n===4) { showScreen('s-proposal'); startProposal(); }
+        }
+
+        /* --- BACKGROUND --- */
+        setInterval(() => {
+            const b = document.getElementById('bg-hearts');
+            const h = document.createElement('div'); h.className = 'bg-heart';
+            h.innerHTML = ['❤️','💕','✨','🌹'][Math.floor(Math.random()*4)];
+            h.style.left = Math.random()*100+'vw';
+            h.style.fontSize = Math.random()*20+10+'px';
+            h.style.animationDuration = Math.random()*3+4+'s';
+            b.appendChild(h); setTimeout(()=>h.remove(), 7000);
+        }, 400);
+
+        /* --- GAME 1: CATCH --- */
+        function startCatch() {
+            const cvs = document.getElementById('c-game1');
+            const ctx = cvs.getContext('2d');
+            let score = 0, active = true, basketX = 140, items = [];
+
+            const move = (x) => {
+                const r = cvs.getBoundingClientRect();
+                basketX = x - r.left - 20;
+            };
+            cvs.addEventListener('mousemove', e => move(e.clientX));
+            cvs.addEventListener('touchmove', e => { e.preventDefault(); move(e.touches[0].clientX); }, {passive:false});
+
+            function spawn() { if(active) items.push({x:Math.random()*260, y:0, s:Math.random()*2+2}); if(active && score<10) setTimeout(spawn, 700); }
+            spawn();
+
+            function loop() {
+                if(!active) return;
+                ctx.clearRect(0,0,280,280);
+                ctx.font = "30px Arial"; ctx.fillText("🧺", basketX, 270);
+                items.forEach((it, i) => {
+                    it.y += it.s;
+                    ctx.fillText("❤️", it.x, it.y);
+                    if(it.y > 240 && it.y < 270 && Math.abs(it.x - basketX) < 40) {
+                        score++; items.splice(i,1);
+                        document.getElementById('score-g1').innerText = score+"/10";
+                        if(score>=10) { active=false; showModal("🎉", "Caught!", "You caught Pranesh's love.", ()=>nextScreen(2)); }
+                    }
+                });
+                requestAnimationFrame(loop);
+            }
+            loop();
+        }
+
+        /* --- GAME 2: MEMORY --- */
+        function startMemory() {
+            const g = document.getElementById('grid-g2'); g.innerHTML = '';
+            const cards = ['❤️','❤️','🌹','🌹','🥰','🥰','💍','💍'].sort(()=>0.5-Math.random());
+            let flipped = [], solved = 0;
+            cards.forEach(c => {
+                const el = document.createElement('div'); el.className = 'mem-card';
+                el.innerHTML = `<div class="mem-inner"><div class="mem-front">?</div><div class="mem-back">${c}</div></div>`;
+                el.onclick = () => {
+                    if(el.classList.contains('flipped') || flipped.length>=2) return;
+                    el.classList.add('flipped'); flipped.push({el, val:c});
+                    if(flipped.length===2) {
+                        if(flipped[0].val === flipped[1].val) {
+                            solved++; flipped=[];
+                            if(solved===4) setTimeout(()=>showModal("🧩", "Perfect!", "Memories matched.", ()=>nextScreen(3)), 500);
+                        } else {
+                            setTimeout(()=>{ flipped.forEach(x=>x.el.classList.remove('flipped')); flipped=[]; }, 800);
+                        }
+                    }
+                };
+                g.appendChild(el);
+            });
+        }
+
+        /* --- GAME 3: PUZZLE --- */
+        function startPuzzle() {
+            const w = ['L','O','V','E'];
+            const s = document.getElementById('slots-g3');
+            const p = document.getElementById('pieces-g3');
+            s.innerHTML = ''; p.innerHTML = ''; let done = 0;
+            w.forEach(()=>s.innerHTML+=`<div class="slot">_</div>`);
+            [...w].sort(()=>0.5-Math.random()).forEach(char => {
+                const el = document.createElement('div'); el.className = 'piece'; el.innerText = char;
+                el.onclick = () => {
+                    const mt = [...document.querySelectorAll('.slot')].find(x=>x.innerText==='_');
+                    if(mt) {
+                        mt.innerText = char; mt.classList.add('filled'); el.style.display='none'; done++;
+                        if(done===4) setTimeout(()=>showModal("💌", "Completed!", "You built our love.", ()=>nextScreen(4)), 500);
+                    }
+                };
+                p.appendChild(el);
+            });
+        }
+
+        /* --- PROPOSAL LOGIC (FIXED: NO BUTTON ALWAYS ON TOP) --- */
+        function startProposal() {
+            const noBtn = document.getElementById('no-btn');
+            const yesBtn = document.getElementById('yes-btn');
+            let scale = 1;
+
+            function runaway() {
+                // IMPORTANT FIX: Move button to BODY to ensure it floats above EVERYTHING
+                // This prevents it from being stuck "behind" the card or Yes button
+                if(noBtn.parentNode !== document.body) {
+                    document.body.appendChild(noBtn);
+                }
+
+                // 1. Get Viewport Size
+                const vw = window.innerWidth;
+                const vh = window.innerHeight;
+                
+                // 2. Get Button Size
+                const bw = noBtn.offsetWidth;
+                const bh = noBtn.offsetHeight;
+
+                // 3. Define Padding (keep away from very edge)
+                const pad = 20;
+
+                // 4. Calculate Max Positions
+                const maxLeft = vw - bw - pad;
+                const maxTop = vh - bh - pad;
+
+                // 5. Generate Random Coordinates
+                const newLeft = Math.floor(Math.random() * (maxLeft - pad) + pad);
+                const newTop = Math.floor(Math.random() * (maxTop - pad) + pad);
+
+                // 6. Apply Fixed Position
+                noBtn.style.position = 'fixed';
+                noBtn.style.left = newLeft + 'px';
+                noBtn.style.top = newTop + 'px';
+                noBtn.style.zIndex = '2147483647'; // Max Z-Index
+
+                // 7. Make YES Bigger
+                if(scale < 2) {
+                    scale += 0.1;
+                    yesBtn.style.transform = `scale(${scale})`;
+                }
+
+                // 8. Change Text
+                const txt = ["Really?", "Are you sure?", "Think again!", "Just click YES!", "Pranesh ❤️ Preethi"];
+                noBtn.innerText = txt[Math.floor(Math.random()*txt.length)];
+            }
+
+            // Events for Desktop and Mobile
+            noBtn.addEventListener('mouseover', runaway);
+            noBtn.addEventListener('touchstart', (e) => { 
+                e.preventDefault(); // Prevents click
+                runaway(); 
+            });
+            // Fallback click handler just in case
+            noBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                runaway();
+            });
+        }
+
+        function sayYes() {
+            showScreen('s-success');
+            // Remove No button if it's floating on body
+            const noBtn = document.getElementById('no-btn');
+            if(noBtn) noBtn.style.display = 'none';
+
+            for(let i=0; i<100; i++) {
+                const c = document.createElement('div');
+                c.className = 'confetti';
+                c.style.left = Math.random()*100+'vw';
+                c.style.background = `hsl(${Math.random()*360},100%,50%)`;
+                c.style.animationDuration = Math.random()*3+2+'s';
+                document.body.appendChild(c);
+            }
+        }
+    </script>
+</body>
+</html>
