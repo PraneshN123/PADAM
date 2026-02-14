@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Pranesh ❤️ Preethi</title>
+    <title>Rakshana ❤️ Vimal</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Nunito:wght@400;700;900&display=swap" rel="stylesheet">
     
@@ -101,11 +101,12 @@
         
         .mem-inner { width: 100%; height: 100%; position: relative; transition: transform 0.6s; transform-style: preserve-3d; }
         .mem-card.flipped .mem-inner { transform: rotateY(180deg); }
-        .mem-front, .mem-back { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; border-radius: 10px; display: flex; justify-content: center; align-items: center; font-size: 1.5rem; }
+        .mem-front, .mem-back { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; border-radius: 10px; display: flex; justify-content: center; align-items: center; font-size: 1.5rem; overflow: hidden; }
         .mem-front { background: white; color: var(--primary); }
-        .mem-back { background: var(--secondary); color: white; transform: rotateY(180deg); }
+        .mem-back { background: var(--secondary); color: white; transform: rotateY(180deg); padding: 0; }
+        .mem-back img { width: 100%; height: 100%; object-fit: cover; border-radius: 10px; }
 
-        /* Puzzle - Optimized for 7 Letters (PREETHI) */
+        /* Puzzle - Optimized for 5 Letters (VIMAL) */
         .puzzle-box { display: flex; gap: 4px; margin-bottom: 20px; background: rgba(255,255,255,0.3); padding: 8px; border-radius: 15px; flex-wrap: wrap; justify-content: center; }
         .slot { width: 35px; height: 35px; background: rgba(0,0,0,0.1); border-radius: 5px; display: flex; justify-content: center; align-items: center; color: white; font-weight: bold; font-size: 0.9rem; transition: background 0.3s, transform 0.3s; }
         .slot.filled { background: var(--primary); }
@@ -174,7 +175,7 @@
     <div class="card">
         
         <div id="s-intro" class="screen active">
-            <h1>Pranesh ❤️ Preethi</h1>
+            <h1>Rakshana ❤️ Vimal</h1>
             <p>Our Love Story...</p>
             <div class="gif-container">
                 <img src="https://media.giphy.com/media/26BRv0ThflsHCqDrG/giphy.gif" alt="Love">
@@ -205,7 +206,7 @@
         </div>
 
         <div id="s-proposal" class="screen">
-            <h1>Preethi...</h1>
+            <h1>Vimal...</h1>
             <div class="gif-container">
                 <img src="https://media.giphy.com/media/l4pTfx2qLszoacZRS/giphy.gif" alt="Please">
             </div>
@@ -218,11 +219,11 @@
         </div>
 
         <div id="s-success" class="screen">
-            <h1 style="font-size: 2.5rem;">She Said YES! 💍</h1>
+            <h1 style="font-size: 2.5rem;">He Said YES! 💍</h1>
             <div class="gif-container" style="height: 200px;">
                 <img src="https://media.tenor.com/gUiu1zyxfzYAAAAC/bear-kiss-bear-kisses.gif" alt="Love Kiss">
             </div>
-            <p>Pranesh ❤️ Preethi</p>
+            <p>Rakshana ❤️ Vimal</p>
             <p style="font-size:0.9rem">Together Forever.</p>
             <button class="btn" onclick="location.reload()">Replay ↺</button>
         </div>
@@ -300,7 +301,7 @@
                     if(it.y > 240 && it.y < 270 && Math.abs(it.x - basketX) < 40) {
                         score++; items.splice(i,1);
                         document.getElementById('score-g1').innerText = score+"/10";
-                        if(score>=10) { active=false; showModal("🎉", "Caught!", "You caught Pranesh's love.", ()=>nextScreen(2)); }
+                        if(score>=10) { active=false; showModal("🎉", "Caught!", "You caught my love.", ()=>nextScreen(2)); }
                     }
                 });
                 requestAnimationFrame(loop);
@@ -308,17 +309,31 @@
             loop();
         }
 
-        /* --- GAME 2: MEMORY --- */
+        /* --- GAME 2: MEMORY (UPDATED WITH POSTIMAGES URLS) --- */
         function startMemory() {
             const g = document.getElementById('grid-g2'); g.innerHTML = '';
-            const cards = ['❤️','❤️','🌹','🌹','🥰','🥰','💍','💍'].sort(()=>0.5-Math.random());
+            
+            // Replaced with your PostImages URLs
+            const userImages = [
+                'https://i.postimg.cc/c1XRCbch/2cac3af8-45bb-43ad-aa33-d7f1e4d58403.jpg',
+                'https://i.postimg.cc/fbcXN2LB/50b8fde5-f4bc-4721-bc45-512ecf207b0c.jpg',
+                'https://i.postimg.cc/HLw5gZx6/66f12cd8-7741-4646-9d49-cc35c717f527.jpg',
+                'https://i.postimg.cc/k5Q8m14j/9e5a58eb-5a46-41be-b615-b98e6f99e7be.jpg'
+            ];
+            
+            // Create pairs
+            const cards = [...userImages, ...userImages].sort(()=>0.5-Math.random());
+            
             let flipped = [], solved = 0;
-            cards.forEach(c => {
+            cards.forEach(imgUrl => {
                 const el = document.createElement('div'); el.className = 'mem-card';
-                el.innerHTML = `<div class="mem-inner"><div class="mem-front">?</div><div class="mem-back">${c}</div></div>`;
+                // Using IMG tag for memory card back
+                const imgTag = `<img src="${imgUrl}" alt="Memory" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3063/3063823.png'">`; // Fallback just in case
+
+                el.innerHTML = `<div class="mem-inner"><div class="mem-front">?</div><div class="mem-back">${imgTag}</div></div>`;
                 el.onclick = () => {
                     if(el.classList.contains('flipped') || flipped.length>=2) return;
-                    el.classList.add('flipped'); flipped.push({el, val:c});
+                    el.classList.add('flipped'); flipped.push({el, val:imgUrl});
                     if(flipped.length===2) {
                         if(flipped[0].val === flipped[1].val) {
                             solved++; flipped=[];
@@ -332,9 +347,10 @@
             });
         }
 
-        /* --- GAME 3: PUZZLE (STRICT "PREETHI" CHECK) --- */
+        /* --- GAME 3: PUZZLE (UPDATED TO "VIMAL") --- */
         function startPuzzle() {
-            const targetWord = ['P','R','E','E','T','H','I'];
+            // UPDATED: Finds the name "VIMAL"
+            const targetWord = ['V','I','M','A','L'];
             const s = document.getElementById('slots-g3');
             const p = document.getElementById('pieces-g3');
             
@@ -351,49 +367,35 @@
             });
             
             // 2. Create Pieces (Randomized Order)
-            // Use spread operator to clone before sorting so we don't mess up order
             const piecesArr = [...targetWord].sort(() => 0.5 - Math.random());
             
             piecesArr.forEach((char, index) => {
                 const el = document.createElement('div'); 
                 el.className = 'piece'; 
                 el.innerText = char;
-                el.id = 'piece-' + index; // Unique ID to track
+                el.id = 'piece-' + index; 
                 
                 el.onclick = () => {
-                    // Find first empty slot
                     const emptySlot = [...document.querySelectorAll('.slot')].find(x => x.innerText === '_');
                     
                     if(emptySlot) {
-                        // Move char to slot
                         emptySlot.innerText = char;
                         emptySlot.classList.add('filled');
-                        
-                        // Hide piece from pool
                         el.style.visibility = 'hidden'; 
-                        
                         filledCount++;
 
-                        // 3. CHECK LOGIC
                         if(filledCount === targetWord.length) {
-                            // Get user's word
                             const currentWord = [...document.querySelectorAll('.slot')]
                                                 .map(x => x.innerText).join('');
                             
-                            if(currentWord === "PREETHI") {
-                                // SUCCESS
+                            if(currentWord === "VIMAL") {
                                 setTimeout(() => {
                                     showModal("💌", "Found You!", "You are my soulmate.", () => nextScreen(4));
                                 }, 300);
                             } else {
-                                // FAIL - MOVE TO DEFAULT POSITION
                                 setTimeout(() => {
-                                    // 1. Shake Effect
                                     document.querySelectorAll('.slot').forEach(slot => slot.classList.add('error'));
-                                    
-                                    // 2. Alert
                                     showModal("⚠️", "Oops!", "That's not the right name! Try again.", () => {
-                                        // 3. Reset Board
                                         resetPuzzle();
                                     });
                                 }, 500);
@@ -406,12 +408,10 @@
 
             function resetPuzzle() {
                 filledCount = 0;
-                // Clear slots
                 document.querySelectorAll('.slot').forEach(slot => {
                     slot.innerText = '_';
                     slot.classList.remove('filled', 'error');
                 });
-                // Show all pieces again
                 document.querySelectorAll('.piece').forEach(piece => {
                     piece.style.visibility = 'visible';
                 });
@@ -425,56 +425,40 @@
             let scale = 1;
 
             function runaway() {
-                // IMPORTANT: Move to BODY so it floats over everything
                 if(noBtn.parentNode !== document.body) {
                     document.body.appendChild(noBtn);
                 }
 
-                // 1. Get Viewport Size
                 const vw = window.innerWidth;
                 const vh = window.innerHeight;
-                
-                // 2. Get Button Size
                 const bw = noBtn.offsetWidth;
                 const bh = noBtn.offsetHeight;
-
-                // 3. Define Padding
                 const pad = 20;
 
-                // 4. Calculate Max Positions (Strictly on screen)
                 const maxLeft = vw - bw - pad;
                 const maxTop = vh - bh - pad;
 
-                // 5. Generate Random Coordinates
                 const newLeft = Math.floor(Math.random() * (maxLeft - pad) + pad);
                 const newTop = Math.floor(Math.random() * (maxTop - pad) + pad);
 
-                // 6. Apply Fixed Position
                 noBtn.style.position = 'fixed';
                 noBtn.style.left = newLeft + 'px';
                 noBtn.style.top = newTop + 'px';
                 
-                // 7. Make YES Bigger
                 if(scale < 2) {
                     scale += 0.1;
                     yesBtn.style.transform = `scale(${scale})`;
                 }
 
-                // 8. Change Text
                 const txt = ["Really?", "Think again!", "Just click YES!", "I love you!"];
                 noBtn.innerText = txt[Math.floor(Math.random()*txt.length)];
             }
 
-            // --- EVENTS (MOBILE OPTIMIZED) ---
             noBtn.addEventListener('mouseover', runaway);
-            
-            // Touchstart: Immediate runaway + Prevent Default
             noBtn.addEventListener('touchstart', (e) => { 
                 e.preventDefault(); 
                 runaway(); 
             }, {passive: false});
-
-            // Click fallback
             noBtn.addEventListener('click', (e) => {
                 e.preventDefault();
                 runaway();
@@ -483,7 +467,6 @@
 
         function sayYes() {
             showScreen('s-success');
-            // Hide No button if it's floating
             const noBtn = document.getElementById('no-btn');
             if(noBtn) noBtn.style.display = 'none';
 
