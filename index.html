@@ -107,10 +107,20 @@
 
         /* Puzzle - Optimized for 7 Letters (PREETHI) */
         .puzzle-box { display: flex; gap: 4px; margin-bottom: 20px; background: rgba(255,255,255,0.3); padding: 8px; border-radius: 15px; flex-wrap: wrap; justify-content: center; }
-        .slot { width: 35px; height: 35px; background: rgba(0,0,0,0.1); border-radius: 5px; display: flex; justify-content: center; align-items: center; color: white; font-weight: bold; font-size: 0.9rem; }
+        .slot { width: 35px; height: 35px; background: rgba(0,0,0,0.1); border-radius: 5px; display: flex; justify-content: center; align-items: center; color: white; font-weight: bold; font-size: 0.9rem; transition: background 0.3s, transform 0.3s; }
         .slot.filled { background: var(--primary); }
+        .slot.error { background: #ff4757; animation: shake 0.4s ease-in-out; }
+        
         .pieces-pool { display: flex; gap: 6px; justify-content: center; flex-wrap: wrap; }
-        .piece { width: 35px; height: 35px; background: white; color: var(--primary); border-radius: 5px; display: flex; justify-content: center; align-items: center; font-weight: bold; cursor: pointer; animation: popIn 0.3s; font-size: 0.9rem; }
+        .piece { width: 35px; height: 35px; background: white; color: var(--primary); border-radius: 5px; display: flex; justify-content: center; align-items: center; font-weight: bold; cursor: pointer; animation: popIn 0.3s; font-size: 0.9rem; transition: transform 0.2s; }
+        .piece:active { transform: scale(0.9); }
+
+        /* Shake animation for wrong letters */
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
 
         /* --- PROPOSAL BUTTONS --- */
         .btn-group {
@@ -322,30 +332,90 @@
             });
         }
 
-        /* --- GAME 3: PUZZLE (UPDATED TO "PREETHI") --- */
+        /* --- GAME 3: PUZZLE (STRICT "PREETHI" CHECK) --- */
         function startPuzzle() {
-            // UPDATED: Finds the name "PREETHI"
-            const w = ['P','R','E','E','T','H','I'];
+            const targetWord = ['P','R','E','E','T','H','I'];
             const s = document.getElementById('slots-g3');
             const p = document.getElementById('pieces-g3');
-            s.innerHTML = ''; p.innerHTML = ''; let done = 0;
             
-            // Create slots
-            w.forEach(()=>s.innerHTML+=`<div class="slot">_</div>`);
+            // Clear board
+            s.innerHTML = ''; p.innerHTML = ''; 
+            let filledCount = 0;
             
-            // Create pieces (randomized)
-            [...w].sort(()=>0.5-Math.random()).forEach(char => {
-                const el = document.createElement('div'); el.className = 'piece'; el.innerText = char;
+            // 1. Create Slots
+            targetWord.forEach(() => {
+                const slot = document.createElement('div');
+                slot.className = 'slot';
+                slot.innerText = '_';
+                s.appendChild(slot);
+            });
+            
+            // 2. Create Pieces (Randomized Order)
+            // Use spread operator to clone before sorting so we don't mess up order
+            const piecesArr = [...targetWord].sort(() => 0.5 - Math.random());
+            
+            piecesArr.forEach((char, index) => {
+                const el = document.createElement('div'); 
+                el.className = 'piece'; 
+                el.innerText = char;
+                el.id = 'piece-' + index; // Unique ID to track
+                
                 el.onclick = () => {
                     // Find first empty slot
-                    const mt = [...document.querySelectorAll('.slot')].find(x=>x.innerText==='_');
-                    if(mt) {
-                        mt.innerText = char; mt.classList.add('filled'); el.style.display='none'; done++;
-                        if(done===w.length) setTimeout(()=>showModal("💌", "Found You!", "You are my soulmate.", ()=>nextScreen(4)), 500);
+                    const emptySlot = [...document.querySelectorAll('.slot')].find(x => x.innerText === '_');
+                    
+                    if(emptySlot) {
+                        // Move char to slot
+                        emptySlot.innerText = char;
+                        emptySlot.classList.add('filled');
+                        
+                        // Hide piece from pool
+                        el.style.visibility = 'hidden'; 
+                        
+                        filledCount++;
+
+                        // 3. CHECK LOGIC
+                        if(filledCount === targetWord.length) {
+                            // Get user's word
+                            const currentWord = [...document.querySelectorAll('.slot')]
+                                                .map(x => x.innerText).join('');
+                            
+                            if(currentWord === "PREETHI") {
+                                // SUCCESS
+                                setTimeout(() => {
+                                    showModal("💌", "Found You!", "You are my soulmate.", () => nextScreen(4));
+                                }, 300);
+                            } else {
+                                // FAIL - MOVE TO DEFAULT POSITION
+                                setTimeout(() => {
+                                    // 1. Shake Effect
+                                    document.querySelectorAll('.slot').forEach(slot => slot.classList.add('error'));
+                                    
+                                    // 2. Alert
+                                    showModal("⚠️", "Oops!", "That's not the right name! Try again.", () => {
+                                        // 3. Reset Board
+                                        resetPuzzle();
+                                    });
+                                }, 500);
+                            }
+                        }
                     }
                 };
                 p.appendChild(el);
             });
+
+            function resetPuzzle() {
+                filledCount = 0;
+                // Clear slots
+                document.querySelectorAll('.slot').forEach(slot => {
+                    slot.innerText = '_';
+                    slot.classList.remove('filled', 'error');
+                });
+                // Show all pieces again
+                document.querySelectorAll('.piece').forEach(piece => {
+                    piece.style.visibility = 'visible';
+                });
+            }
         }
 
         /* --- PROPOSAL LOGIC --- */
