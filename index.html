@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Pranesh ❤️ Preethi | The Love Story</title>
+    <title>Pranesh ❤️ Preethi</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Nunito:wght@400;700;900&display=swap" rel="stylesheet">
     
@@ -17,12 +17,13 @@
             --shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
         }
 
-        * { margin: 0; padding: 0; box-sizing: border-box; touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
+        /* Prevent highlighting and scrolling */
+        * { margin: 0; padding: 0; box-sizing: border-box; touch-action: manipulation; -webkit-tap-highlight-color: transparent; user-select: none; }
 
         body {
             font-family: 'Nunito', sans-serif;
             background: linear-gradient(135deg, #fbc2eb 0%, #a6c1ee 100%);
-            /* Use dvh for mobile browsers with dynamic toolbars */
+            /* Mobile Viewport Fixes */
             height: 100vh;
             height: 100dvh; 
             width: 100vw;
@@ -40,29 +41,29 @@
         /* --- 3. CUSTOM POPUP --- */
         .modal-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.5); backdrop-filter: blur(5px);
+            background: rgba(0,0,0,0.6); backdrop-filter: blur(8px);
             z-index: 9999; display: none;
             justify-content: center; align-items: center;
             animation: fadeIn 0.3s ease;
         }
         .modal-card {
             background: white; padding: 30px; border-radius: 25px;
-            text-align: center; width: 85%; max-width: 350px;
+            text-align: center; width: 85%; max-width: 320px;
             box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-            transform: scale(0.8);
+            transform: scale(0.9);
             animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
         }
         .modal-icon { font-size: 3rem; margin-bottom: 10px; display: block; }
         .modal-title { font-family: 'Dancing Script'; font-size: 2rem; color: var(--primary); }
-        .modal-msg { margin-bottom: 20px; color: #444; line-height: 1.5; }
-        .modal-btn { background: var(--primary); color: white; border: none; padding: 12px 30px; border-radius: 50px; font-weight: bold; cursor: pointer; }
+        .modal-msg { margin-bottom: 20px; color: #444; line-height: 1.4; font-size: 1rem; }
+        .modal-btn { background: var(--primary); color: white; border: none; padding: 12px 30px; border-radius: 50px; font-weight: bold; cursor: pointer; font-size: 1rem; }
 
         /* --- 4. MAIN CARD UI --- */
         .card {
             background: var(--bg-glass);
             backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
             border: 2px solid var(--border); border-radius: 30px;
-            padding: 1.5rem; width: 90%; max-width: 480px; 
+            padding: 1.5rem; width: 92%; max-width: 450px; 
             /* Flexible height for mobile */
             min-height: 500px; max-height: 90dvh;
             box-shadow: var(--shadow); position: relative; z-index: 10;
@@ -70,18 +71,17 @@
             text-align: center;
         }
 
-        h1 { font-family: 'Dancing Script', cursive; font-size: 2.8rem; color: #d63031; margin-bottom: 10px; }
+        h1 { font-family: 'Dancing Script', cursive; font-size: 2.5rem; color: #d63031; margin-bottom: 10px; line-height: 1.2; }
         p { font-size: 1.1rem; color: #2d3436; margin-bottom: 20px; }
         
-        .gif-container { width: 100%; height: 160px; border-radius: 15px; overflow: hidden; margin-bottom: 20px; display: flex; justify-content: center; }
+        .gif-container { width: 100%; height: 150px; border-radius: 15px; overflow: hidden; margin-bottom: 20px; display: flex; justify-content: center; }
         .gif-container img { height: 100%; width: auto; max-width: 100%; object-fit: cover; }
 
         .btn {
             background: linear-gradient(45deg, #ff3366, #ff6b81); color: white; border: none;
-            padding: 15px 40px; border-radius: 50px; font-size: 1.2rem; font-weight: bold;
+            padding: 15px 35px; border-radius: 50px; font-size: 1.1rem; font-weight: bold;
             cursor: pointer; box-shadow: 0 5px 15px rgba(255, 51, 102, 0.4);
             transition: transform 0.2s; font-family: 'Nunito', sans-serif;
-            /* Prevent sticky hover on mobile */
             -webkit-tap-highlight-color: transparent;
         }
         .btn:active { transform: scale(0.95); }
@@ -92,13 +92,12 @@
         @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
         /* Game Elements */
-        /* touch-action: none prevents scrolling while playing game */
         canvas { background: rgba(255,255,255,0.5); border-radius: 15px; margin-bottom: 10px; cursor: crosshair; touch-action: none; }
         
-        .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin: 15px 0; }
-        .mem-card { width: 60px; height: 60px; position: relative; perspective: 1000px; cursor: pointer; }
-        /* Adjust for smaller screens */
-        @media (max-width: 350px) { .mem-card { width: 50px; height: 50px; } }
+        /* Memory Grid */
+        .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin: 15px 0; }
+        .mem-card { width: 55px; height: 55px; position: relative; perspective: 1000px; cursor: pointer; }
+        @media (max-width: 350px) { .mem-card { width: 45px; height: 45px; } }
         
         .mem-inner { width: 100%; height: 100%; position: relative; transition: transform 0.6s; transform-style: preserve-3d; }
         .mem-card.flipped .mem-inner { transform: rotateY(180deg); }
@@ -106,17 +105,18 @@
         .mem-front { background: white; color: var(--primary); }
         .mem-back { background: var(--secondary); color: white; transform: rotateY(180deg); }
 
-        .puzzle-box { display: flex; gap: 5px; margin-bottom: 20px; background: rgba(255,255,255,0.3); padding: 10px; border-radius: 15px; }
-        .slot { width: 40px; height: 40px; background: rgba(0,0,0,0.1); border-radius: 5px; display: flex; justify-content: center; align-items: center; color: white; font-weight: bold; }
+        /* Puzzle - Optimized for 7 Letters (PREETHI) */
+        .puzzle-box { display: flex; gap: 4px; margin-bottom: 20px; background: rgba(255,255,255,0.3); padding: 8px; border-radius: 15px; flex-wrap: wrap; justify-content: center; }
+        .slot { width: 35px; height: 35px; background: rgba(0,0,0,0.1); border-radius: 5px; display: flex; justify-content: center; align-items: center; color: white; font-weight: bold; font-size: 0.9rem; }
         .slot.filled { background: var(--primary); }
-        .pieces-pool { display: flex; gap: 10px; justify-content: center; }
-        .piece { width: 40px; height: 40px; background: white; color: var(--primary); border-radius: 5px; display: flex; justify-content: center; align-items: center; font-weight: bold; cursor: pointer; animation: popIn 0.3s; }
+        .pieces-pool { display: flex; gap: 6px; justify-content: center; flex-wrap: wrap; }
+        .piece { width: 35px; height: 35px; background: white; color: var(--primary); border-radius: 5px; display: flex; justify-content: center; align-items: center; font-weight: bold; cursor: pointer; animation: popIn 0.3s; font-size: 0.9rem; }
 
         /* --- PROPOSAL BUTTONS --- */
         .btn-group {
             position: relative;
             width: 100%;
-            height: 80px;
+            height: 90px;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -133,13 +133,12 @@
         #no-btn {
             background: white; 
             color: #333; 
-            /* High Z-Index to stay above everything */
-            z-index: 99999 !important; 
+            /* SUPER Z-INDEX */
+            z-index: 2147483647 !important; 
             position: relative; 
-            transition: top 0.1s ease-out, left 0.1s ease-out;
+            transition: top 0.15s ease-out, left 0.15s ease-out;
             box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-            /* Important: Stop mobile browser from handling touch */
-            touch-action: none;
+            touch-action: none; /* Crucial for mobile */
         }
 
         /* Confetti */
@@ -166,11 +165,11 @@
         
         <div id="s-intro" class="screen active">
             <h1>Pranesh ❤️ Preethi</h1>
-            <p>A magical journey awaits...</p>
+            <p>Our Love Story...</p>
             <div class="gif-container">
                 <img src="https://media.giphy.com/media/26BRv0ThflsHCqDrG/giphy.gif" alt="Love">
             </div>
-            <p>Ready to unlock the love story?</p>
+            <p>Are you ready for this?</p>
             <button class="btn" onclick="nextScreen(1)">Start Journey 🌹</button>
         </div>
 
@@ -189,8 +188,8 @@
         </div>
 
         <div id="s-game3" class="screen">
-            <h2>Build Love 🧩</h2>
-            <p>Complete the word</p>
+            <h2>Find The Name 🧩</h2>
+            <p>Who is my soulmate?</p>
             <div class="puzzle-box" id="slots-g3"></div>
             <div class="pieces-pool" id="pieces-g3"></div>
         </div>
@@ -209,13 +208,13 @@
         </div>
 
         <div id="s-success" class="screen">
-            <h1 style="font-size: 3rem;">She Said YES! 💍</h1>
+            <h1 style="font-size: 2.5rem;">She Said YES! 💍</h1>
             <div class="gif-container" style="height: 200px;">
-                <img src="https://media.giphy.com/media/T86i6yDyOYz7J6Akqv/giphy.gif" alt="Hug">
+                <img src="https://media.tenor.com/gUiu1zyxfzYAAAAC/bear-kiss-bear-kisses.gif" alt="Love Kiss">
             </div>
-            <p>Pranesh is the happiest person alive! ❤️</p>
-            <p>I Love You Forever, Preethi.</p>
-            <button class="btn" onclick="location.reload()">Replay Love Story ↺</button>
+            <p>Pranesh ❤️ Preethi</p>
+            <p style="font-size:0.9rem">Together Forever.</p>
+            <button class="btn" onclick="location.reload()">Replay ↺</button>
         </div>
 
     </div>
@@ -258,25 +257,23 @@
             b.appendChild(h); setTimeout(()=>h.remove(), 7000);
         }, 400);
 
-        /* --- GAME 1: CATCH --- */
+        /* --- GAME 1: CATCH (Mobile Optimized) --- */
         function startCatch() {
             const cvs = document.getElementById('c-game1');
             const ctx = cvs.getContext('2d');
             let score = 0, active = true, basketX = 140, items = [];
 
-            // Optimized Move for Mobile & Desktop
             const move = (clientX) => {
                 const r = cvs.getBoundingClientRect();
-                let x = clientX - r.left; // x relative to canvas
-                // Clamp within bounds
+                let x = clientX - r.left; 
                 if(x < 0) x = 0;
                 if(x > 280) x = 280;
-                basketX = x - 20; // Center basket
+                basketX = x - 20; 
             };
 
             cvs.addEventListener('mousemove', e => move(e.clientX));
             cvs.addEventListener('touchmove', e => { 
-                e.preventDefault(); // Stop Scroll
+                e.preventDefault(); 
                 move(e.touches[0].clientX); 
             }, {passive:false});
 
@@ -325,20 +322,26 @@
             });
         }
 
-        /* --- GAME 3: PUZZLE --- */
+        /* --- GAME 3: PUZZLE (UPDATED TO "PREETHI") --- */
         function startPuzzle() {
-            const w = ['L','O','V','E'];
+            // UPDATED: Finds the name "PREETHI"
+            const w = ['P','R','E','E','T','H','I'];
             const s = document.getElementById('slots-g3');
             const p = document.getElementById('pieces-g3');
             s.innerHTML = ''; p.innerHTML = ''; let done = 0;
+            
+            // Create slots
             w.forEach(()=>s.innerHTML+=`<div class="slot">_</div>`);
+            
+            // Create pieces (randomized)
             [...w].sort(()=>0.5-Math.random()).forEach(char => {
                 const el = document.createElement('div'); el.className = 'piece'; el.innerText = char;
                 el.onclick = () => {
+                    // Find first empty slot
                     const mt = [...document.querySelectorAll('.slot')].find(x=>x.innerText==='_');
                     if(mt) {
                         mt.innerText = char; mt.classList.add('filled'); el.style.display='none'; done++;
-                        if(done===4) setTimeout(()=>showModal("💌", "Completed!", "You built our love.", ()=>nextScreen(4)), 500);
+                        if(done===w.length) setTimeout(()=>showModal("💌", "Found You!", "You are my soulmate.", ()=>nextScreen(4)), 500);
                     }
                 };
                 p.appendChild(el);
@@ -352,7 +355,7 @@
             let scale = 1;
 
             function runaway() {
-                // MOVE TO BODY: Break out of any overflow:hidden or stacking context
+                // IMPORTANT: Move to BODY so it floats over everything
                 if(noBtn.parentNode !== document.body) {
                     document.body.appendChild(noBtn);
                 }
@@ -368,7 +371,7 @@
                 // 3. Define Padding
                 const pad = 20;
 
-                // 4. Calculate Max Positions (Ensure it stays strictly on screen)
+                // 4. Calculate Max Positions (Strictly on screen)
                 const maxLeft = vw - bw - pad;
                 const maxTop = vh - bh - pad;
 
@@ -388,14 +391,14 @@
                 }
 
                 // 8. Change Text
-                const txt = ["Really?", "Are you sure?", "Think again!", "Just click YES!", "Pranesh ❤️ Preethi"];
+                const txt = ["Really?", "Think again!", "Just click YES!", "I love you!"];
                 noBtn.innerText = txt[Math.floor(Math.random()*txt.length)];
             }
 
             // --- EVENTS (MOBILE OPTIMIZED) ---
             noBtn.addEventListener('mouseover', runaway);
             
-            // Touchstart: Immediate runaway + Prevent Default to stop 'click'
+            // Touchstart: Immediate runaway + Prevent Default
             noBtn.addEventListener('touchstart', (e) => { 
                 e.preventDefault(); 
                 runaway(); 
