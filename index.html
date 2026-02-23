@@ -1,483 +1,135 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Rakshana ❤️ Vimal</title>
-    
-    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Nunito:wght@400;700;900&display=swap" rel="stylesheet">
-    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manufacturing AI - Pure CSS</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        /* --- 1. CORE VARIABLES --- */
+        /* === RESET & BASE === */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         :root {
-            --primary: #ff3366;
-            --secondary: #ff6b81;
-            --bg-glass: rgba(255, 255, 255, 0.4);
-            --border: rgba(255, 255, 255, 0.6);
-            --shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+            --bg-dark: #07090e; --surface: #12151f; --surface-light: #1c2130;
+            --border: #2a3143; --text-main: #f1f5f9; --text-muted: #64748b;
+            --mfg-orange: #ff5e00; --mfg-orange-glow: rgba(255, 94, 0, 0.3);
+            --laser-blue: #00d2ff;
         }
-
-        /* Prevent highlighting and scrolling */
-        * { margin: 0; padding: 0; box-sizing: border-box; touch-action: manipulation; -webkit-tap-highlight-color: transparent; user-select: none; }
 
         body {
-            font-family: 'Nunito', sans-serif;
-            background: linear-gradient(135deg, #fbc2eb 0%, #a6c1ee 100%);
-            /* Mobile Viewport Fixes */
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            font-family: 'Inter', sans-serif;
             height: 100vh;
-            height: 100dvh; 
-            width: 100vw;
             overflow: hidden;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        /* --- 2. BACKGROUND ANIMATION --- */
-        .bg-hearts { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; }
-        .bg-heart { position: absolute; bottom: -50px; animation: floatUp linear infinite; opacity: 0.7; }
-        @keyframes floatUp { to { transform: translateY(-120vh) rotate(360deg); opacity: 0; } }
-
-        /* --- 3. CUSTOM POPUP --- */
-        .modal-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.6); backdrop-filter: blur(8px);
-            z-index: 9999; display: none;
-            justify-content: center; align-items: center;
-            animation: fadeIn 0.3s ease;
-        }
-        .modal-card {
-            background: white; padding: 30px; border-radius: 25px;
-            text-align: center; width: 85%; max-width: 320px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-            transform: scale(0.9);
-            animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
-        }
-        .modal-icon { font-size: 3rem; margin-bottom: 10px; display: block; }
-        .modal-title { font-family: 'Dancing Script'; font-size: 2rem; color: var(--primary); }
-        .modal-msg { margin-bottom: 20px; color: #444; line-height: 1.4; font-size: 1rem; }
-        .modal-btn { background: var(--primary); color: white; border: none; padding: 12px 30px; border-radius: 50px; font-weight: bold; cursor: pointer; font-size: 1rem; }
-
-        /* --- 4. MAIN CARD UI --- */
-        .card {
-            background: var(--bg-glass);
-            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-            border: 2px solid var(--border); border-radius: 30px;
-            padding: 1.5rem; width: 92%; max-width: 450px; 
-            /* Flexible height for mobile */
-            min-height: 500px; max-height: 90dvh;
-            box-shadow: var(--shadow); position: relative; z-index: 10;
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            text-align: center;
-        }
-
-        h1 { font-family: 'Dancing Script', cursive; font-size: 2.5rem; color: #d63031; margin-bottom: 10px; line-height: 1.2; }
-        p { font-size: 1.1rem; color: #2d3436; margin-bottom: 20px; }
-        
-        .gif-container { width: 100%; height: 150px; border-radius: 15px; overflow: hidden; margin-bottom: 20px; display: flex; justify-content: center; }
-        .gif-container img { height: 100%; width: auto; max-width: 100%; object-fit: cover; }
-
-        .btn {
-            background: linear-gradient(45deg, #ff3366, #ff6b81); color: white; border: none;
-            padding: 15px 35px; border-radius: 50px; font-size: 1.1rem; font-weight: bold;
-            cursor: pointer; box-shadow: 0 5px 15px rgba(255, 51, 102, 0.4);
-            transition: transform 0.2s; font-family: 'Nunito', sans-serif;
-            -webkit-tap-highlight-color: transparent;
-        }
-        .btn:active { transform: scale(0.95); }
-
-        /* --- 5. GAME SCREENS --- */
-        .screen { display: none; width: 100%; flex-direction: column; align-items: center; animation: slideUp 0.6s ease; }
-        .screen.active { display: flex; }
-        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-
-        /* Game Elements */
-        canvas { background: rgba(255,255,255,0.5); border-radius: 15px; margin-bottom: 10px; cursor: crosshair; touch-action: none; }
-        
-        /* Memory Grid */
-        .grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin: 15px 0; }
-        .mem-card { width: 55px; height: 55px; position: relative; perspective: 1000px; cursor: pointer; }
-        @media (max-width: 350px) { .mem-card { width: 45px; height: 45px; } }
-        
-        .mem-inner { width: 100%; height: 100%; position: relative; transition: transform 0.6s; transform-style: preserve-3d; }
-        .mem-card.flipped .mem-inner { transform: rotateY(180deg); }
-        .mem-front, .mem-back { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; border-radius: 10px; display: flex; justify-content: center; align-items: center; font-size: 1.5rem; overflow: hidden; }
-        .mem-front { background: white; color: var(--primary); }
-        .mem-back { background: var(--secondary); color: white; transform: rotateY(180deg); padding: 0; }
-        .mem-back img { width: 100%; height: 100%; object-fit: cover; border-radius: 10px; }
-
-        /* Puzzle - Optimized for 5 Letters (VIMAL) */
-        .puzzle-box { display: flex; gap: 4px; margin-bottom: 20px; background: rgba(255,255,255,0.3); padding: 8px; border-radius: 15px; flex-wrap: wrap; justify-content: center; }
-        .slot { width: 35px; height: 35px; background: rgba(0,0,0,0.1); border-radius: 5px; display: flex; justify-content: center; align-items: center; color: white; font-weight: bold; font-size: 0.9rem; transition: background 0.3s, transform 0.3s; }
-        .slot.filled { background: var(--primary); }
-        .slot.error { background: #ff4757; animation: shake 0.4s ease-in-out; }
-        
-        .pieces-pool { display: flex; gap: 6px; justify-content: center; flex-wrap: wrap; }
-        .piece { width: 35px; height: 35px; background: white; color: var(--primary); border-radius: 5px; display: flex; justify-content: center; align-items: center; font-weight: bold; cursor: pointer; animation: popIn 0.3s; font-size: 0.9rem; transition: transform 0.2s; }
-        .piece:active { transform: scale(0.9); }
-
-        /* Shake animation for wrong letters */
-        @keyframes shake {
-            0%, 100% { transform: translateX(0); }
-            25% { transform: translateX(-5px); }
-            75% { transform: translateX(5px); }
-        }
-
-        /* --- PROPOSAL BUTTONS --- */
-        .btn-group {
             position: relative;
-            width: 100%;
-            height: 90px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 20px;
-            margin-top: 10px;
         }
 
-        #yes-btn {
-            background: #ff3366; 
-            z-index: 10;
-            transition: transform 0.3s ease;
+        #search-trigger { display: none; }
+
+        .search-container {
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            width: 100%; max-width: 650px; padding: 0 20px;
+            display: flex; flex-direction: column; align-items: center;
+            transition: all 0.8s cubic-bezier(0.16, 1, 0.3, 1); z-index: 100;
         }
 
-        #no-btn {
-            background: white; 
-            color: #333; 
-            /* SUPER Z-INDEX */
-            z-index: 2147483647 !important; 
-            position: relative; 
-            transition: top 0.15s ease-out, left 0.15s ease-out;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-            touch-action: none; /* Crucial for mobile */
-        }
+        .brand-title { font-size: 2rem; font-weight: 600; margin-bottom: 2rem; letter-spacing: 1px; text-transform: uppercase; }
+        .brand-title span { color: var(--mfg-orange); font-family: 'JetBrains Mono', monospace; }
 
-        /* Confetti */
-        .confetti { position: absolute; width: 10px; height: 10px; animation: fall 3s linear forwards; z-index: 200; }
-        @keyframes fall { to { transform: translateY(100vh) rotate(720deg); } }
-        @keyframes popIn { from { transform: scale(0); } to { transform: scale(1); } }
+        .search-bar { width: 100%; display: flex; background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 8px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5); }
+        .search-input { flex: 1; background: transparent; border: none; padding: 15px 20px; color: var(--text-main); font-size: 1.1rem; outline: none; font-family: 'JetBrains Mono', monospace; }
+        .search-btn { background: var(--mfg-orange); color: #000; border: none; border-radius: 8px; padding: 0 30px; font-weight: 700; cursor: pointer; text-transform: uppercase; display: flex; align-items: center; }
 
+        #search-trigger:checked~.search-container { top: 2rem; transform: translate(-50%, 0); max-width: 900px; }
+        .content-area { position: absolute; top: 180px; left: 50%; transform: translateX(-50%); width: 100%; max-width: 860px; padding: 0 20px; }
+
+        .loading-view { position: absolute; top: 0; left: 0; width: 100%; display: flex; flex-direction: column; align-items: center; opacity: 0; visibility: hidden; }
+        #search-trigger:checked~.content-area .loading-view { animation: playLoading 4.5s ease forwards; }
+
+        .parts-assembly-line { position: relative; width: 280px; height: 100px; display: flex; justify-content: space-around; align-items: center; margin-bottom: 2rem; border-bottom: 2px solid var(--border); }
+        .assembly-scanner { position: absolute; top: -10px; bottom: -10px; width: 4px; background: var(--laser-blue); box-shadow: 0 0 15px var(--laser-blue); animation: scanLine 2s ease-in-out infinite alternate; }
+        
+        .part-gear { width: 50px; height: 50px; border-radius: 50%; background: var(--surface-light); animation: spin 4s linear infinite; position: relative; }
+        .gear-tooth { position: absolute; width: 10px; height: 55px; background: var(--text-muted); left: 20px; top: -2.5px; }
+        .gear-tooth:nth-child(2) { transform: rotate(45deg); }
+        .gear-tooth:nth-child(3) { transform: rotate(90deg); }
+        .gear-tooth:nth-child(4) { transform: rotate(135deg); }
+
+        .part-nut { width: 46px; height: 52px; background: var(--mfg-orange); clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%); animation: spinReverse 3s linear infinite; }
+        .part-bolt { display: flex; flex-direction: column; align-items: center; animation: bounceBolt 1.5s ease-in-out infinite alternate; }
+        .bolt-head { width: 32px; height: 12px; background: var(--text-main); clip-path: polygon(10% 0, 90% 0, 100% 100%, 0 100%); }
+        .bolt-thread { width: 16px; height: 30px; background: repeating-linear-gradient(-20deg, var(--text-muted), var(--text-muted) 4px, var(--surface-light) 4px, var(--surface-light) 8px); }
+
+        .results-view { position: absolute; top: 0; left: 0; width: 100%; background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 2rem; opacity: 0; visibility: hidden; transform: translateY(20px); }
+        #search-trigger:checked~.content-area .results-view { animation: showResults 0.5s 4.5s ease forwards; }
+
+        .results-header { display: flex; justify-content: space-between; margin-bottom: 1.5rem; border-bottom: 1px solid var(--border); padding-bottom: 1rem; }
+        .results-title { color: var(--mfg-orange); text-transform: uppercase; font-size: 0.9rem; }
+        .query-badge { background: rgba(255, 94, 0, 0.1); padding: 5px 12px; border-radius: 6px; font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; border: 1px solid var(--mfg-orange); }
+        .code-output { font-family: 'JetBrains Mono', monospace; color: #a7f3d0; line-height: 1.6; font-size: 0.95rem; white-space: pre-wrap; max-height: 50vh; overflow-y: auto; }
+
+        @keyframes scanLine { 0% { left: 0%; } 100% { left: 100%; } }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+        @keyframes spinReverse { 100% { transform: rotate(-360deg); } }
+        @keyframes bounceBolt { 0% { transform: translateY(-5px); } 100% { transform: translateY(5px); } }
+        @keyframes playLoading { 0% { opacity: 0; visibility: visible; } 5% { opacity: 1; } 95% { opacity: 1; } 100% { opacity: 0; visibility: hidden; } }
+        @keyframes showResults { to { opacity: 1; visibility: visible; transform: translateY(0); } }
     </style>
 </head>
+
 <body>
 
-    <div class="modal-overlay" id="modal">
-        <div class="modal-card">
-            <span class="modal-icon" id="m-icon">✨</span>
-            <div class="modal-title" id="m-title">Title</div>
-            <div class="modal-msg" id="m-msg">Message</div>
-            <button class="modal-btn" id="m-btn">Continue</button>
+    <input type="checkbox" id="search-trigger">
+
+    <div class="search-container">
+        <div class="brand-title">Manufacturing <span>AI</span></div>
+        <div class="search-bar">
+            <input type="text" class="search-input" id="dynamic-input" placeholder="Ask about industrial types...">
+            <label for="search-trigger" class="search-btn" onclick="triggerSearch()">Search</label>
         </div>
     </div>
 
-    <div class="bg-hearts" id="bg-hearts"></div>
-
-    <div class="card">
-        
-        <div id="s-intro" class="screen active">
-            <h1>Rakshana ❤️ Vimal</h1>
-            <p>Our Love Story...</p>
-            <div class="gif-container">
-                <img src="https://media.giphy.com/media/26BRv0ThflsHCqDrG/giphy.gif" alt="Love">
+    <div class="content-area">
+        <div class="loading-view">
+            <div class="parts-assembly-line">
+                <div class="assembly-scanner"></div>
+                <div class="part-gear">
+                    <div class="gear-tooth"></div><div class="gear-tooth"></div><div class="gear-tooth"></div><div class="gear-tooth"></div>
+                </div>
+                <div class="part-nut"></div>
+                <div class="part-bolt">
+                    <div class="bolt-head"></div>
+                    <div class="bolt-thread"></div>
+                </div>
             </div>
-            <p>Are you ready for this?</p>
-            <button class="btn" onclick="nextScreen(1)">Start Journey 🌹</button>
+            <div style="color: var(--laser-blue); font-family: 'JetBrains Mono';">PROCESSING COMPONENTS...</div>
         </div>
 
-        <div id="s-game1" class="screen">
-            <h2>Catch My Heart ❤️</h2>
-            <p>Collect 10 hearts!</p>
-            <h3 id="score-g1">0 / 10</h3>
-            <canvas id="c-game1" width="280" height="280"></canvas>
-            <p style="font-size:0.8rem">Drag the basket 🧺</p>
-        </div>
-
-        <div id="s-game2" class="screen">
-            <h2>Our Memories 💭</h2>
-            <p>Match the pairs</p>
-            <div class="grid" id="grid-g2"></div>
-        </div>
-
-        <div id="s-game3" class="screen">
-            <h2>Find The Name 🧩</h2>
-            <p>Who is my soulmate?</p>
-            <div class="puzzle-box" id="slots-g3"></div>
-            <div class="pieces-pool" id="pieces-g3"></div>
-        </div>
-
-        <div id="s-proposal" class="screen">
-            <h1>Vimal...</h1>
-            <div class="gif-container">
-                <img src="https://media.giphy.com/media/l4pTfx2qLszoacZRS/giphy.gif" alt="Please">
+        <div class="results-view">
+            <div class="results-header">
+                <div class="results-title">AI RESPONSE</div>
+                <div class="query-badge" id="dynamic-badge">No Query</div>
             </div>
-            <p style="font-size: 1.2rem; font-weight: bold;">Will You Be My Valentine? 💖</p>
-            
-            <div class="btn-group">
-                <button id="yes-btn" class="btn" onclick="sayYes()">YES 🥰</button>
-                <button id="no-btn" class="btn">NO 😢</button>
-            </div>
+            <div class="code-output" id="ai-output">Awaiting data from local node...</div>
         </div>
-
-        <div id="s-success" class="screen">
-            <h1 style="font-size: 2.5rem;">He Said YES! 💍</h1>
-            <div class="gif-container" style="height: 200px;">
-                <img src="https://media.tenor.com/gUiu1zyxfzYAAAAC/bear-kiss-bear-kisses.gif" alt="Love Kiss">
-            </div>
-            <p>Rakshana ❤️ Vimal</p>
-            <p style="font-size:0.9rem">Together Forever.</p>
-            <button class="btn" onclick="location.reload()">Replay ↺</button>
-        </div>
-
     </div>
 
     <script>
-        /* --- HELPERS --- */
-        function showModal(icon, title, msg, cb) {
-            const m = document.getElementById('modal');
-            document.getElementById('m-icon').innerText = icon;
-            document.getElementById('m-title').innerText = title;
-            document.getElementById('m-msg').innerText = msg;
-            m.style.display = 'flex';
-            
-            const btn = document.getElementById('m-btn');
-            const newBtn = btn.cloneNode(true);
-            btn.parentNode.replaceChild(newBtn, btn);
-            newBtn.onclick = () => { m.style.display = 'none'; if(cb) cb(); };
-        }
-
-        function showScreen(id) {
-            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-            document.getElementById(id).classList.add('active');
-        }
-
-        function nextScreen(n) {
-            if(n===1) { showScreen('s-game1'); startCatch(); }
-            if(n===2) { showScreen('s-game2'); startMemory(); }
-            if(n===3) { showScreen('s-game3'); startPuzzle(); }
-            if(n===4) { showScreen('s-proposal'); startProposal(); }
-        }
-
-        /* --- BACKGROUND --- */
-        setInterval(() => {
-            const b = document.getElementById('bg-hearts');
-            const h = document.createElement('div'); h.className = 'bg-heart';
-            h.innerHTML = ['❤️','💕','✨','🌹'][Math.floor(Math.random()*4)];
-            h.style.left = Math.random()*100+'vw';
-            h.style.fontSize = Math.random()*20+10+'px';
-            h.style.animationDuration = Math.random()*3+4+'s';
-            b.appendChild(h); setTimeout(()=>h.remove(), 7000);
-        }, 400);
-
-        /* --- GAME 1: CATCH (Mobile Optimized) --- */
-        function startCatch() {
-            const cvs = document.getElementById('c-game1');
-            const ctx = cvs.getContext('2d');
-            let score = 0, active = true, basketX = 140, items = [];
-
-            const move = (clientX) => {
-                const r = cvs.getBoundingClientRect();
-                let x = clientX - r.left; 
-                if(x < 0) x = 0;
-                if(x > 280) x = 280;
-                basketX = x - 20; 
-            };
-
-            cvs.addEventListener('mousemove', e => move(e.clientX));
-            cvs.addEventListener('touchmove', e => { 
-                e.preventDefault(); 
-                move(e.touches[0].clientX); 
-            }, {passive:false});
-
-            function spawn() { if(active) items.push({x:Math.random()*260, y:0, s:Math.random()*2+2}); if(active && score<10) setTimeout(spawn, 700); }
-            spawn();
-
-            function loop() {
-                if(!active) return;
-                ctx.clearRect(0,0,280,280);
-                ctx.font = "30px Arial"; ctx.fillText("🧺", basketX, 270);
-                items.forEach((it, i) => {
-                    it.y += it.s;
-                    ctx.fillText("❤️", it.x, it.y);
-                    if(it.y > 240 && it.y < 270 && Math.abs(it.x - basketX) < 40) {
-                        score++; items.splice(i,1);
-                        document.getElementById('score-g1').innerText = score+"/10";
-                        if(score>=10) { active=false; showModal("🎉", "Caught!", "You caught my love.", ()=>nextScreen(2)); }
-                    }
-                });
-                requestAnimationFrame(loop);
-            }
-            loop();
-        }
-
-        /* --- GAME 2: MEMORY (UPDATED WITH POSTIMAGES URLS) --- */
-        function startMemory() {
-            const g = document.getElementById('grid-g2'); g.innerHTML = '';
-            
-            // Replaced with your PostImages URLs
-            const userImages = [
-                'https://i.postimg.cc/c1XRCbch/2cac3af8-45bb-43ad-aa33-d7f1e4d58403.jpg',
-                'https://i.postimg.cc/fbcXN2LB/50b8fde5-f4bc-4721-bc45-512ecf207b0c.jpg',
-                'https://i.postimg.cc/HLw5gZx6/66f12cd8-7741-4646-9d49-cc35c717f527.jpg',
-                'https://i.postimg.cc/k5Q8m14j/9e5a58eb-5a46-41be-b615-b98e6f99e7be.jpg'
-            ];
-            
-            // Create pairs
-            const cards = [...userImages, ...userImages].sort(()=>0.5-Math.random());
-            
-            let flipped = [], solved = 0;
-            cards.forEach(imgUrl => {
-                const el = document.createElement('div'); el.className = 'mem-card';
-                // Using IMG tag for memory card back
-                const imgTag = `<img src="${imgUrl}" alt="Memory" onerror="this.src='https://cdn-icons-png.flaticon.com/512/3063/3063823.png'">`; // Fallback just in case
-
-                el.innerHTML = `<div class="mem-inner"><div class="mem-front">?</div><div class="mem-back">${imgTag}</div></div>`;
-                el.onclick = () => {
-                    if(el.classList.contains('flipped') || flipped.length>=2) return;
-                    el.classList.add('flipped'); flipped.push({el, val:imgUrl});
-                    if(flipped.length===2) {
-                        if(flipped[0].val === flipped[1].val) {
-                            solved++; flipped=[];
-                            if(solved===4) setTimeout(()=>showModal("🧩", "Perfect!", "Memories matched.", ()=>nextScreen(3)), 500);
-                        } else {
-                            setTimeout(()=>{ flipped.forEach(x=>x.el.classList.remove('flipped')); flipped=[]; }, 800);
-                        }
-                    }
-                };
-                g.appendChild(el);
+        async function triggerSearch() {
+            const response = await fetch("https://ollama.com/api/chat", {
+                method: "POST",
+                headers: {
+                    "Authorization": "Bearer a8d45e8c63e4437a954941d2525cd71a.rgWGfGpdb9BG3y5glbDQg629", // Get this from openrouter.ai
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    "model": "qwen3-vl:235b-instruct-cloud", // High-power open model
+                    "messages": [{ "role": "user", "content": "Why is the sky blue?" }]
+                })
             });
-        }
-
-        /* --- GAME 3: PUZZLE (UPDATED TO "VIMAL") --- */
-        function startPuzzle() {
-            // UPDATED: Finds the name "VIMAL"
-            const targetWord = ['V','I','M','A','L'];
-            const s = document.getElementById('slots-g3');
-            const p = document.getElementById('pieces-g3');
-            
-            // Clear board
-            s.innerHTML = ''; p.innerHTML = ''; 
-            let filledCount = 0;
-            
-            // 1. Create Slots
-            targetWord.forEach(() => {
-                const slot = document.createElement('div');
-                slot.className = 'slot';
-                slot.innerText = '_';
-                s.appendChild(slot);
-            });
-            
-            // 2. Create Pieces (Randomized Order)
-            const piecesArr = [...targetWord].sort(() => 0.5 - Math.random());
-            
-            piecesArr.forEach((char, index) => {
-                const el = document.createElement('div'); 
-                el.className = 'piece'; 
-                el.innerText = char;
-                el.id = 'piece-' + index; 
-                
-                el.onclick = () => {
-                    const emptySlot = [...document.querySelectorAll('.slot')].find(x => x.innerText === '_');
-                    
-                    if(emptySlot) {
-                        emptySlot.innerText = char;
-                        emptySlot.classList.add('filled');
-                        el.style.visibility = 'hidden'; 
-                        filledCount++;
-
-                        if(filledCount === targetWord.length) {
-                            const currentWord = [...document.querySelectorAll('.slot')]
-                                                .map(x => x.innerText).join('');
-                            
-                            if(currentWord === "VIMAL") {
-                                setTimeout(() => {
-                                    showModal("💌", "Found You!", "You are my soulmate.", () => nextScreen(4));
-                                }, 300);
-                            } else {
-                                setTimeout(() => {
-                                    document.querySelectorAll('.slot').forEach(slot => slot.classList.add('error'));
-                                    showModal("⚠️", "Oops!", "That's not the right name! Try again.", () => {
-                                        resetPuzzle();
-                                    });
-                                }, 500);
-                            }
-                        }
-                    }
-                };
-                p.appendChild(el);
-            });
-
-            function resetPuzzle() {
-                filledCount = 0;
-                document.querySelectorAll('.slot').forEach(slot => {
-                    slot.innerText = '_';
-                    slot.classList.remove('filled', 'error');
-                });
-                document.querySelectorAll('.piece').forEach(piece => {
-                    piece.style.visibility = 'visible';
-                });
-            }
-        }
-
-        /* --- PROPOSAL LOGIC --- */
-        function startProposal() {
-            const noBtn = document.getElementById('no-btn');
-            const yesBtn = document.getElementById('yes-btn');
-            let scale = 1;
-
-            function runaway() {
-                if(noBtn.parentNode !== document.body) {
-                    document.body.appendChild(noBtn);
-                }
-
-                const vw = window.innerWidth;
-                const vh = window.innerHeight;
-                const bw = noBtn.offsetWidth;
-                const bh = noBtn.offsetHeight;
-                const pad = 20;
-
-                const maxLeft = vw - bw - pad;
-                const maxTop = vh - bh - pad;
-
-                const newLeft = Math.floor(Math.random() * (maxLeft - pad) + pad);
-                const newTop = Math.floor(Math.random() * (maxTop - pad) + pad);
-
-                noBtn.style.position = 'fixed';
-                noBtn.style.left = newLeft + 'px';
-                noBtn.style.top = newTop + 'px';
-                
-                if(scale < 2) {
-                    scale += 0.1;
-                    yesBtn.style.transform = `scale(${scale})`;
-                }
-
-                const txt = ["Really?", "Think again!", "Just click YES!", "I love you!"];
-                noBtn.innerText = txt[Math.floor(Math.random()*txt.length)];
-            }
-
-            noBtn.addEventListener('mouseover', runaway);
-            noBtn.addEventListener('touchstart', (e) => { 
-                e.preventDefault(); 
-                runaway(); 
-            }, {passive: false});
-            noBtn.addEventListener('click', (e) => {
-                e.preventDefault();
-                runaway();
-            });
-        }
-
-        function sayYes() {
-            showScreen('s-success');
-            const noBtn = document.getElementById('no-btn');
-            if(noBtn) noBtn.style.display = 'none';
-
-            for(let i=0; i<100; i++) {
-                const c = document.createElement('div');
-                c.className = 'confetti';
-                c.style.left = Math.random()*100+'vw';
-                c.style.background = `hsl(${Math.random()*360},100%,50%)`;
-                c.style.animationDuration = Math.random()*3+2+'s';
-                document.body.appendChild(c);
-            }
+            const data = await response.json();
+            console.log(data.choices[0].message.content);
         }
     </script>
 </body>
